@@ -1,103 +1,152 @@
-#criar um sistema bancario
-#cadastro de usuarios
-#funcoes bancarias
- 
-for i in range(0,6):  
-    nome = input("Informe seu nome:")
-    sobrenome = input("Informe seu Sobrenome :")
-    cpf = input("Informe seu CPF (11 DIGITOS):")
-    endereco = input("Informe seu Endereco :")
-    telefone = input("Informe seu telefone :")
-    senha = input("Informe sua senha:") 
-
-    #Perguntando ao usuario suas informacoes e verificando se estao nos requisitos
-    while(len(nome)<3):
-        print("Nome inválido,mínimo de tres letras")    
-        nome = input("Informe seu nome novamente :") 
-
-    while(len(sobrenome)<3):
-        print("Sobrenome inválido,mínimo de tres letras")
-        sobrenome = input("Informe seu Sobrenome novamente :") 
-
-    while(len(cpf)<11):
-        print("O seu CPF está incorreto")
-        cpf = input("Informe seu CPF novamente (11 DIGITOS) :") 
- 
-    while((len(senha)<5) or (senha.isalnum()==True or senha.isalpha()==True)):
-             print("A senha nao atende aos requisitos (Deve conter pelo menos 1 numero e caracter especial")
-             senha = input("Informe sua senha: ) ")
-    email = input("Informe seu email (Deve conter este formato (email@email) :")
-    
-    #verificando se contem @ no email
-    for i in email:
-        if("@" in email):
-            break
-    else:
-        email = input("seu email esta incorreto, por favor insira novamente com este formato (email@email)"  )
-    clientes={"nome:{}" .format(nome+" "+sobrenome),"Endereço:{}".format(endereco),"Senha:{}".format(senha),"Email:{}".format(email),"celular:{}".format(telefone),"cpf:{}".format(cpf)}
-    print("Os dados da conta cadastrados -",clientes)
-    print("----------") 
-   
-    todos=0
-    todos=todos+1
-
-    if(todos==1):
-        contaprincipal={}
-        contasecundaria=clientes.copy()
-        print("Parabens, agora voce esta na sua Conta Principal")
-    elif(todos==2):
-        contasecundaria=clientes.copy()
-        del clientes
-        print("Parabens, agora voce esta na sua Conta Secundaria")
-     
-    saldoTotal=0
-    depositar=0
-    sacar=0
-    def encerrar():
-        if(todos==1):           
-           print(contaprincipal)
-           contaprincipal.clear()
-        elif(todos==2):
-           print(contasecundaria)
-           contasecundaria.clear()
-    print("----------")        
-         
-    encerrar()
-      
-    def menu():  
-        saldo=0
-        for i in range(0,9):                       
-            menu = int(input("Olá o que voce deseja? \n1-Depositar\n2-Sacar\n3-Conferir Saldo\n4-Transferir\n5-Encerrar Conta\n")) 
-            if(menu==1):
-                deposito=float(input("Insira a quantia que deseje depositar:"))
-                saldo=saldo+deposito
-                print("Saldo:",saldo)
-                while(deposito<0):
-                     deposito=float(input("Impossivel depositar valor negativo, por favor insira um valor valido:"))
-                     if(deposito>=0):
-                        saldo=saldo+deposito
-                        print("Saldo:",saldo)
-                     else:
-                         pass
-            elif(menu==2):
-                sacar=float(input("Insira a quantia quer deseja sacar :"))
-                saldo=saldo-sacar  
-                while(sacar>saldo):
-                      sacar=float(input("Saldo insuficiente,impossivel efetuar o saque"))
-                      saldo=saldo-sacar
-            elif(menu==3):
-                       print("Seu saldo no momento:",saldo)
-            elif(menu==4):
-                    transferir = float(input("Insira o valor que deseja transferir:"))
-                    saldo=saldo-transferir
-            elif(menu==5):
-                     encerrar=input("Deseja mesmo encerrar? Digite sim caso queira.")
-                     if(encerrar=="sim"):
-                         encerrar()
-                     else:
-                         pass
+def ValidateName():
+    name=input("Informe seu nome : ")
+    name_split = name.split()
+    print(name_split)
+    for x in name_split:        
+        if len(x)>3:
+            pass
+        else:
+            print("\nnome invalido:")
+            continuar = int(input("1- Tentar novamente  2- Sair :"))
+            if continuar==1:
+                ValidateName()
             else:
-                 pass
+                SystemExit(0)
+    return name
 
-    menu() 
-     
+def ValidatePassword():
+    password=input("informe sua senha (deve conter um número e um caractere especial)  :" ) 
+    if len(password)>5:
+        for x in ["1","2","3","4","5","6","7","8","9"]:
+            for i in password:
+                if x==i:
+                    if "@" or "_" or "-" or "*" or "#" or "$" in password:
+                        return password
+    print("\nsenha invalida:")
+    continuar = int(input("1- Tentar novamente  2- Sair :"))
+    if continuar==1:
+        ValidatePassword()
+    else:
+        return False
+
+def ValidateEmail():
+    email=input("Informe seu email : ")
+    if "@" in email:
+        return email
+    else:
+        print("\nemail incorreto ou inválido. ")
+    continuar = int(input("1- Tentar novamente  2- Sair :"))
+    if continuar==1:
+        ValidateEmail()
+    else:
+        return False
+
+def Register():
+    name=ValidateName()
+    password=ValidatePassword()
+    email=ValidateEmail()
+    cpf=input("Informe seu cpf :")
+    address=input("Informe seu endereço :")
+    cell=input("Informe seu numero de celular:")
+    if name==False or password==False or email==False:
+        print("credenciais incoretas")
+        SystemExit(0)
+    else:
+        list_name.append(name)
+        list_password.append(password)
+        list_email.append(email)
+        list_address.append(address)
+        list_cpf.append(cpf)
+        list_cell.append(cell) 
+        codigo=list_name.index(name)
+        list_balance.append(0)
+
+
+def Deposit(codigo):
+    deposit=float(input("\nInforme a quantia que deseja depositar : "))
+    if deposit>0:
+        list_balance[codigo]+=deposit
+    else:
+        print("valor invalido")
+        return
+
+def Withdraw(codigo):
+    withdraw=float(input("\nInforme a quantia que deseja sacar : "))
+    if withdraw <list_balance[codigo]:
+        list_balance[codigo]=(list_balance[codigo])-(withdraw)
+
+def CheckBalance(codigo):
+    print("\nseu saldo é:", list_balance[codigo], )
+
+def Transfer(codigo):
+    code_transfer=int(input("Qual conta voce deseja mandar :"))
+    value_transfer=float(input("valor que deseja enviar ou digite 0 caso deseja cancelar :"))
+    if value_transfer<=0:
+        return
+    elif value_transfer<=list_balance[codigo]:
+        list_balance[codigo]+= -value_transfer
+        list_balance[code_transfer]+=value_transfer
+    else:
+        print("\nValor inexistente !")
+        return
+
+
+def Login():
+    login_email=input("\nInforme seu email :")
+    login_password=input("Informe sua senha : ")
+    if login_email in list_email:
+        if (login_password in list_password) and (list_email.index(login_email)==list_password.index(login_password)):
+                ChoiceAccount(list_email.index(login_email))
+        else:
+            print("Senha inválida, insira email e senha novamente:")
+            Login()
+    else:
+        print("\neste email nao existe ou nao foi registrado  :")
+        escolha=input("1-Tentar novamente  2-sair : ")
+        if escolha =="1":
+            Login()
+        else:
+            return
+
+def ChoiceAccount(codigo):
+    while True:
+        print("\nInforme o numero correspondende a operacao que deseja:")
+        print("1-Depositar")
+        print("2-Sacar")
+        print("3-conferir o saldo")
+        print("4-Trasferir")
+        print("5-Encerrar conta")
+        escolha=int(input("-->"))
+        if escolha==1:
+            Deposit(codigo)
+        elif escolha==2:
+            Withdraw(codigo)
+        elif escolha==3:
+            CheckBalance(codigo)
+        elif escolha==4:
+            Transfer(codigo)
+        elif escolha==5:
+            return
+        print(list_balance)
+ 
+def Choice():
+    while True:
+        print("1-Logar 2-Cadastrar 3-sair ")
+        choice = int(input(">"))
+        if(choice==1):
+            Login()
+        elif(choice==2):
+            Register() 
+        if(choice==3):
+            break
+    return
+ 
+list_name=[]
+list_password=[]
+list_email=[]
+list_address=[]
+list_cpf=[]
+list_cell=[]
+list_balance=[]
+list_code=[] 
+Choice()
